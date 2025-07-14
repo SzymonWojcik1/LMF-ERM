@@ -41,4 +41,22 @@ class AuthController extends Controller
             'token' => $token,
         ]);
     }
+
+    /**
+     * Handle user logout request
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout(Request $request)
+    {
+        // Révocation de tous les tokens de l'utilisateur authentifié
+        if ($request->user()) {
+            $request->user()->tokens()->delete();
+        }
+
+        return response()->json([
+            'message' => 'Déconnexion réussie'
+        ]);
+    }
 }
