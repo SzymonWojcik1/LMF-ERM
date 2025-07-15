@@ -38,6 +38,7 @@ class ClientController extends Controller
         $validated = $request->validate([
             'cli_type' => ['required', new Enum(ClientType::class)],
             'cli_nom_entreprise' => 'nullable|string|max:255',
+            'cli_nom' => 'nullable|string|max:255',
             'cli_prenom' => 'nullable|string|max:255',
             'cli_email' => 'nullable|email|max:255',
             'cli_adresse' => 'nullable|string|max:255',
@@ -81,6 +82,7 @@ class ClientController extends Controller
         $validated = $request->validate([
             'cli_type' => ['required', new Enum(ClientType::class)],
             'cli_nom_entreprise' => 'nullable|string|max:255',
+            'cli_nom' => 'nullable|string|max:255',
             'cli_prenom' => 'nullable|string|max:255',
             'cli_email' => 'nullable|string|max:255',
             'cli_adresse' => 'nullable|string|max:255',

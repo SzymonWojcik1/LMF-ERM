@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 // import Link from 'next/link';
+import { deleteClient } from '@/services/clientService';
 import Navbar from '@/components/Navbar';
 
 interface Client {
@@ -63,7 +64,7 @@ export default function ClientsPage() {
 
   // Helper function to format client type for display
   const formatClientType = (type: string) => {
-    if (type === 'entreprise') return 'Collectif';
+    if (type === 'entreprise') return 'Entreprise';
     if (type === 'particulier') return 'Individuel';
     return type;
   };
@@ -102,10 +103,26 @@ export default function ClientsPage() {
                   <div>{displayValue(client.cli_nom)}</div>
                   <div>{displayValue(client.cli_prenom)}</div>
                   <div className="flex justify-center space-x-2">
-                    <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                    <a
+                      href={`/clients/edit/${client.cli_id}`}
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                    >
                       Modifier
-                    </button>
-                    <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
+                    </a>
+                    <button
+                    onClick={async () => {
+                      if (confirm('Êtes-vous sûr de vouloir supprimer '+client.cli_nom+' '+client.cli_prenom+' '+ client.cli_nom_entreprise+ ' ?')) {
+                        try {
+                          await deleteClient(client.cli_id);
+                          setClients(clients.filter((c) => c.cli_id !== client.cli_id));
+                        } catch (err) {
+                          console.error('Failed to delete client:', err);
+                          setError('Une erreur est survenue lors de la suppression du client');
+                        }
+                      }
+                    }}
+                    type="button"
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
                       Supprimer
                     </button>
                   </div>
@@ -119,9 +136,11 @@ export default function ClientsPage() {
 
             {/* Add New Client Button */}
             <div className="p-4 flex justify-center">
-              <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md">
+              <a
+              href="/clients/new"
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center">
                 Créer un nouveau client
-              </button>
+              </a>
             </div>
           </div>
         )}
