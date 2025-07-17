@@ -103,7 +103,7 @@ class ClientController extends Controller
         }
 
         $validated['cli_type'] = ClientType::from($validated['cli_type']);
-        $validated['cli_updated_at'] = now(); // forcé ici
+        $validated['cli_updated_at'] = now();
 
         $client->update($validated);
 
@@ -113,9 +113,27 @@ class ClientController extends Controller
     // Delete a client
     public function destroy(string $id)
     {
-        $client = Client::findOrFail($id);
-        $client->delete();
+        try {
+            DB::beginTransaction();
 
-        return response()->json(['message' => 'Client supprimé avec succès.']);
+            $client = Client::findOrFail($id);
+
+            // Check if client has sites
+            $sites = \App\Models\Site::where('sit_client_id', $id)->get();
+
+            // Delete related sites first
+            foreach ($sites as $site) {
+                $site->delete();
+            }
+
+            // Then delete the client
+            $client->delete();
+
+            DB::commit();
+            return response()->json(['message' => 'Client supprimé avec succès.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['message' => 'Erreur lors de la suppression du client: ' . $e->getMessage()], 500);
+        }
     }
 }

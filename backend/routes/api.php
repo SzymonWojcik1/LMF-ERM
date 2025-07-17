@@ -20,8 +20,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Routes for the management of clients (protected by authentication)
 Route::middleware('auth:sanctum')->group(function () {
+    // Routes for the management of clients (protected by authentication)
     Route::apiResource('clients', ClientController::class);
 
     // Routes for the management of sites
