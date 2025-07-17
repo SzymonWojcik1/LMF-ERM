@@ -36,7 +36,7 @@ class SiteSeeder extends Seeder
 
         Site::create([
             'sit_client_id' => 1,
-            'sit_nom' => 'Site Secondaire',
+            'sit_nom' => 'Etude avocat',
             'sit_heure' => '90',
             'sit_nb_personne' => 15,
             'sit_statut' => SiteStatus::ACTIF,
@@ -49,15 +49,15 @@ class SiteSeeder extends Seeder
 
         Site::create([
             'sit_client_id' => 4,
-            'sit_nom' => 'Site Archivé',
+            'sit_nom' => 'Maison de la Culture',
             'sit_heure' => '32',
             'sit_nb_personne' => 8,
             'sit_statut' => SiteStatus::TERMINE,
             'sit_adresse' => 'Chemin des Fougères 5',
             'sit_npa' => 1004,
             'sit_ville' => 'Lausanne',
-            'sit_created_by' => $user->id,
-            'sit_updated_by' => $user->id,
+            'sit_created_by' => 1,
+            'sit_updated_by' => 1,
         ]);
     }
 }
