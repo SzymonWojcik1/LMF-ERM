@@ -66,8 +66,8 @@ export default function SiteDetailPage({ params }: { params: { id: string } }) {
 
   // Helper function to format site status for display
   const formatSiteStatus = (status: string) => {
-    if (status === 'ACTIF') return 'Actif';
-    if (status === 'TERMINE') return 'Terminé';
+    if (status === 'actif') return 'Actif';
+    if (status === 'terminé') return 'Terminé';
     return status;
   };
 
@@ -144,7 +144,7 @@ export default function SiteDetailPage({ params }: { params: { id: string } }) {
                 <div className="font-medium">Statut:</div>
                 <div>
                   <span className={`px-2 py-1 rounded-full ${
-                    site.sit_statut === 'ACTIF' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                    site.sit_statut === 'actif' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
                   }`}>
                     {formatSiteStatus(site.sit_statut)}
                   </span>

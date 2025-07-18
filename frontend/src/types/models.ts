@@ -36,7 +36,6 @@ export interface User {
   usr_nom: string;
   usr_prenom: string;
   usr_email?: string;
-  // Add other user properties as needed
 }
 
 
@@ -62,7 +61,7 @@ export interface Site {
   sit_nom: string;
   sit_heure: string;
   sit_nb_personne: number;
-  sit_statut: 'ACTIF' | 'TERMINE';
+  sit_statut: 'actif' | 'terminé';
   sit_adresse: string;
   sit_npa?: number;
   sit_ville?: string;
@@ -75,12 +74,18 @@ export interface Site {
   client?: Client;
   createdBy?: {
     id: number;
-    usr_nom: string;
-    usr_prenom: string;
+    usr_nom?: string;
+    usr_prenom?: string;
+    nom?: string;
+    prenom?: string;
+    [key: string]: string | number | undefined;
   };
   updatedBy?: {
     id: number;
-    usr_nom: string;
-    usr_prenom: string;
+    usr_nom?: string;
+    usr_prenom?: string;
+    nom?: string;
+    prenom?: string;
+    [key: string]: string | number | undefined;
   };
 }

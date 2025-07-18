@@ -60,6 +60,19 @@ export const siteService = {
       throw new Error('Not authenticated');
     }
 
+    // Ensure numeric values are actually numbers, not strings
+    const preparedSite = {
+      ...site,
+      sit_client_id: Number(site.sit_client_id),
+      sit_nb_personne: Number(site.sit_nb_personne),
+      sit_npa: Number(site.sit_npa),
+      sit_created_by: Number(site.sit_created_by),
+      sit_updated_by: Number(site.sit_updated_by)
+    };
+
+    console.log('Creating site with data:', preparedSite);
+    console.log('JSON payload:', JSON.stringify(preparedSite));
+
     const response = await fetch(`${API_URL}/sites`, {
       method: 'POST',
       headers: {
@@ -67,7 +80,7 @@ export const siteService = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify(site),
+      body: JSON.stringify(preparedSite),
     });
     return handleResponse<Site>(response);
   },
@@ -79,6 +92,20 @@ export const siteService = {
       throw new Error('Not authenticated');
     }
 
+    // Ensure numeric values not strings
+    const preparedSite = {
+      ...site,
+      sit_client_id: Number(site.sit_client_id),
+      sit_nb_personne: Number(site.sit_nb_personne),
+      sit_npa: site.sit_npa ? Number(site.sit_npa) : undefined,
+      sit_created_by: site.sit_created_by ? Number(site.sit_created_by) : undefined,
+      sit_updated_by: Number(site.sit_updated_by)
+    };
+
+    // Log
+    console.log('Updating site with data:', preparedSite);
+    console.log('JSON payload:', JSON.stringify(preparedSite));
+
     const response = await fetch(`${API_URL}/sites/${id}`, {
       method: 'PUT',
       headers: {
@@ -86,7 +113,7 @@ export const siteService = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify(site),
+      body: JSON.stringify(preparedSite),
     });
     return handleResponse<Site>(response);
   },

@@ -15,7 +15,7 @@ class SiteController extends Controller
     public function index(Request $request): JsonResponse
     {
         $sites = Site::query()
-            ->with(['client', 'createdBy', 'updatedBy'])
+            ->with(['client', 'createdBy:id,usr_nom,usr_prenom', 'updatedBy:id,usr_nom,usr_prenom'])
             ->when($request->sit_statut, fn($q) => $q->where('sit_statut', $request->sit_statut))
             ->when($request->search, function ($q, $search) {
                 $q->where('sit_nom', 'like', "%$search%")
@@ -40,6 +40,8 @@ class SiteController extends Controller
             'sit_adresse' => 'required|string|max:255',
             'sit_npa' => 'required|integer',
             'sit_ville' => 'required|string|max:255',
+            'sit_created_by' => 'required|integer|exists:users,id',
+            'sit_updated_by' => 'required|integer|exists:users,id',
         ]);
 
         if ($validator->fails()) {
@@ -47,7 +49,11 @@ class SiteController extends Controller
         }
 
         $user = Auth::user();
-        $userId = $user ? $user->usr_id : 1; // Default to 1 if no authenticated user
+        $userId = $user ? $user->id : null;
+
+        // Use explicitly provided user IDs from request, or fall back to authenticated user
+        $createdBy = $request->sit_created_by ?? $userId ?? 1;
+        $updatedBy = $request->sit_updated_by ?? $userId ?? 1;
 
         $site = Site::create([
             'sit_client_id' => $request->sit_client_id,
@@ -58,8 +64,8 @@ class SiteController extends Controller
             'sit_adresse' => $request->sit_adresse,
             'sit_npa' => $request->sit_npa,
             'sit_ville' => $request->sit_ville,
-            'sit_created_by' => $userId,
-            'sit_updated_by' => $userId,
+            'sit_created_by' => $createdBy,
+            'sit_updated_by' => $updatedBy,
         ]);
 
         return response()->json($site, 201);
@@ -67,7 +73,11 @@ class SiteController extends Controller
 
     public function show(int $id): JsonResponse
     {
-        $site = Site::with(['client', 'createdBy', 'updatedBy'])->find($id);
+        $site = Site::with([
+            'client',
+            'createdBy:id,usr_nom,usr_prenom',
+            'updatedBy:id,usr_nom,usr_prenom'
+        ])->find($id);
 
         if (!$site) {
             return response()->json(['message' => 'Site not found'], 404);
@@ -100,11 +110,14 @@ class SiteController extends Controller
         }
 
         $user = Auth::user();
-        $userId = $user ? $user->usr_id : 1; // Default to 1 if no authenticated user
+        $userId = $user ? $user->id : 1; // Default to 1 if no authenticated user
+
+        // If sit_updated_by is provided in the request, use that instead
+        $updatedBy = $request->sit_updated_by ?? $userId;
 
         $site->update(array_merge(
             $request->all(),
-            ['sit_updated_by' => $userId]
+            ['sit_updated_by' => $updatedBy]
         ));
 
         return response()->json($site);

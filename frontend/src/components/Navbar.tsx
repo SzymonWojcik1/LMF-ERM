@@ -5,15 +5,25 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 
 export default function Navbar() {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
+  const [sitesDropdownOpen, setSitesDropdownOpen] = useState(false);
+  const [clientsDropdownOpen, setClientsDropdownOpen] = useState(false);
+  const accountDropdownRef = useRef<HTMLDivElement>(null);
+  const sitesDropdownRef = useRef<HTMLDivElement>(null);
+  const clientsDropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
+      if (accountDropdownRef.current && !accountDropdownRef.current.contains(event.target as Node)) {
+        setAccountDropdownOpen(false);
+      }
+      if (sitesDropdownRef.current && !sitesDropdownRef.current.contains(event.target as Node)) {
+        setSitesDropdownOpen(false);
+      }
+      if (clientsDropdownRef.current && !clientsDropdownRef.current.contains(event.target as Node)) {
+        setClientsDropdownOpen(false);
       }
     }
 
@@ -75,16 +85,42 @@ export default function Navbar() {
                 Accueil
               </Link>
 
-              <Link
-                href="/sites"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full ${
-                  pathname.startsWith('/sites')
-                    ? 'border-blue-500 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                }`}
-              >
-                Sites
-              </Link>
+              {/* Sites dropdown */}
+              <div className="relative" ref={sitesDropdownRef}>
+                <button
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full ${
+                    pathname.startsWith('/sites') || sitesDropdownOpen
+                      ? 'border-blue-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  }`}
+                  onClick={() => setSitesDropdownOpen(!sitesDropdownOpen)}
+                  onMouseEnter={() => setSitesDropdownOpen(true)}
+                >
+                  Sites <span className="ml-1">▾</span>
+                </button>
+
+                {/* Sites dropdown panel */}
+                {sitesDropdownOpen && (
+                  <div
+                    className="absolute left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-10"
+                    onMouseLeave={() => setSitesDropdownOpen(false)}
+                  >
+                    <Link
+                      href="/sites"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Liste
+                    </Link>
+
+                    <Link
+                      href="/sites/new"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Créer
+                    </Link>
+                  </div>
+                )}
+              </div>
 
               <Link
                 href="/factures"
@@ -97,36 +133,62 @@ export default function Navbar() {
                 Factures
               </Link>
 
-              <Link
-                href="/clients"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full ${
-                  pathname.startsWith('/clients')
-                    ? 'border-blue-500 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                }`}
-              >
-                Clients
-              </Link>
-
-              {/* Dropdown menu */}
-              <div className="relative" ref={dropdownRef}>
+              {/* Clients dropdown */}
+              <div className="relative" ref={clientsDropdownRef}>
                 <button
                   className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full ${
-                    pathname.startsWith('/compte') || dropdownOpen
+                    pathname.startsWith('/clients') || clientsDropdownOpen
                       ? 'border-blue-500 text-gray-900'
                       : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                   }`}
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                  onMouseEnter={() => setDropdownOpen(true)}
+                  onClick={() => setClientsDropdownOpen(!clientsDropdownOpen)}
+                  onMouseEnter={() => setClientsDropdownOpen(true)}
                 >
-                  Compte
+                  Clients <span className="ml-1">▾</span>
                 </button>
 
-                {/* Dropdown panel */}
-                {dropdownOpen && (
+                {/* Clients dropdown panel */}
+                {clientsDropdownOpen && (
+                  <div
+                    className="absolute left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-10"
+                    onMouseLeave={() => setClientsDropdownOpen(false)}
+                  >
+                    <Link
+                      href="/clients"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Liste
+                    </Link>
+
+                    <Link
+                      href="/clients/new"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Créer
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Account dropdown */}
+              <div className="relative" ref={accountDropdownRef}>
+                <button
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full ${
+                    pathname.startsWith('/compte') || accountDropdownOpen
+                      ? 'border-blue-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  }`}
+                  onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
+                  onMouseEnter={() => setAccountDropdownOpen(true)}
+                >
+                  Compte <span className="ml-1">▾</span>
+                </button>
+
+                {/* Account dropdown panel */}
+                {accountDropdownOpen && (
                   <div
                     className="absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-10"
-                    onMouseLeave={() => setDropdownOpen(false)}
+                    onMouseLeave={() => setAccountDropdownOpen(false)}
                   >
                     <Link
                       href="/compte"
