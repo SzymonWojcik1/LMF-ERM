@@ -12,23 +12,23 @@ use Illuminate\Support\Facades\Validator;
 
 class SiteController extends Controller
 {
-    /**
-     * Display a listing of the sites.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $sites = Site::with(['client', 'createdBy', 'updatedBy'])->get();
+        $sites = Site::query()
+            ->with(['client', 'createdBy', 'updatedBy'])
+            ->when($request->sit_statut, fn($q) => $q->where('sit_statut', $request->sit_statut))
+            ->when($request->search, function ($q, $search) {
+                $q->where('sit_nom', 'like', "%$search%")
+                  ->orWhere('sit_adresse', 'like', "%$search%")
+                  ->orWhere('sit_ville', 'like', "%$search%")
+                  ->orWhere('sit_npa', 'like', "%$search%");
+            })
+            ->when($request->order === 'recent', fn($q) => $q->orderByDesc('sit_updated_at'))
+            ->get();
+
         return response()->json($sites);
     }
 
-    /**
-     * Store a newly created site in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
@@ -65,12 +65,6 @@ class SiteController extends Controller
         return response()->json($site, 201);
     }
 
-    /**
-     * Display the specified site.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function show(int $id): JsonResponse
     {
         $site = Site::with(['client', 'createdBy', 'updatedBy'])->find($id);
@@ -82,13 +76,6 @@ class SiteController extends Controller
         return response()->json($site);
     }
 
-    /**
-     * Update the specified site in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function update(Request $request, int $id): JsonResponse
     {
         $site = Site::find($id);
@@ -123,12 +110,6 @@ class SiteController extends Controller
         return response()->json($site);
     }
 
-    /**
-     * Remove the specified site from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function destroy(int $id): JsonResponse
     {
         $site = Site::find($id);
@@ -142,12 +123,6 @@ class SiteController extends Controller
         return response()->json(['message' => 'Site deleted successfully']);
     }
 
-    /**
-     * Get sites by client ID.
-     *
-     * @param  int  $clientId
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function getByClientId(int $clientId): JsonResponse
     {
         $sites = Site::where('sit_client_id', $clientId)->get();
@@ -155,11 +130,6 @@ class SiteController extends Controller
         return response()->json($sites);
     }
 
-    /**
-     * Get active sites.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function getActiveSites(): JsonResponse
     {
         $sites = Site::where('sit_statut', SiteStatus::ACTIF)->get();

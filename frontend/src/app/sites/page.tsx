@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { deleteSite, Site, siteService } from '@/services/siteService';
+import { deleteSite, siteService } from '@/services/siteService';
+import { Site } from '@/types/models';
 import Navbar from '@/components/Navbar';
+import Link from 'next/link';
 
 export default function SitesPage() {
   const [sites, setSites] = useState<Site[]>([]);
@@ -57,10 +59,10 @@ export default function SitesPage() {
 
   // Helper function to format user initials
   const formatUserInitials = (site: Site) => {
-    if (!site.user) return '-';
+    if (!site.updatedBy) return '-';
 
-    const prenom = site.user.usr_prenom || '';
-    const nom = site.user.usr_nom || '';
+    const prenom = site.updatedBy.usr_prenom || '';
+    const nom = site.updatedBy.usr_nom || '';
 
     if (prenom && nom) {
       return `${prenom[0]}.${nom[0]}`;
@@ -131,13 +133,13 @@ export default function SitesPage() {
                   <div className="flex justify-center space-x-2 py-2 bg-gray-50">
                     <a
                       href={`/sites/${site.sit_id}`}
-                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm min-w-[80px] text-center"
                     >
                       Voir
                     </a>
                     <a
                       href={`/sites/edit/${site.sit_id}`}
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm min-w-[80px] text-center"
                     >
                       Modifier
                     </a>
@@ -158,7 +160,7 @@ export default function SitesPage() {
                           }
                         }
                       }}
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm min-w-[80px] text-center"
                     >
                       Supprimer
                     </button>
@@ -172,13 +174,13 @@ export default function SitesPage() {
             )}
 
             {/* Add New Site Button */}
-            <div className="p-4 flex justify-center">
-              <a
+            <div className="flex justify-center p-4">
+              <Link
                 href="/sites/new"
-                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center"
+                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center w-[264px]"
               >
                 Créer un nouveau site
-              </a>
+              </Link>
             </div>
           </div>
         )}

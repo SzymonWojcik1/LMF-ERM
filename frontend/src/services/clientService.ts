@@ -1,19 +1,6 @@
 'use client';
 
-// Define the Client interface
-export interface Client {
-  cli_id?: number;
-  cli_type: 'entreprise' | 'particulier';
-  cli_nom_entreprise?: string;
-  cli_nom?: string;
-  cli_prenom?: string;
-  cli_email?: string;
-  cli_adresse?: string;
-  cli_npa: string;
-  cli_ville: string;
-  cli_created_at?: string;
-  cli_updated_at?: string;
-}
+import { Client } from '@/types/models';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 

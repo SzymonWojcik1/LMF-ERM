@@ -1,30 +1,6 @@
 'use client';
 
-// Define the Site interface
-export interface Site {
-  sit_id?: number;
-  sit_nom: string;
-  sit_client_id: number;
-  sit_heure: string;
-  sit_nb_personne: number;
-  sit_adresse: string;
-  sit_statut: 'ACTIF' | 'TERMINE';
-  sit_modified_by?: number;
-  sit_created_at?: string;
-  sit_updated_at?: string;
-  client?: {
-    cli_id: number;
-    cli_type: 'particulier' | 'entreprise';
-    cli_nom_entreprise: string | null;
-    cli_nom: string | null;
-    cli_prenom: string | null;
-  };
-  user?: {
-    id: number;
-    usr_nom: string;
-    usr_prenom: string;
-  };
-}
+import { Site } from '@/types/models';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 

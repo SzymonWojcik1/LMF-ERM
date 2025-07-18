@@ -1,21 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-// import Link from 'next/link';
-import { deleteClient } from '@/services/clientService';
+import Link from 'next/link';
+import { clientService, deleteClient } from '@/services/clientService';
+import { Client } from '@/types/models';
 import Navbar from '@/components/Navbar';
-
-interface Client {
-  cli_id: number;
-  cli_type: 'particulier' | 'entreprise';
-  cli_nom_entreprise: string | null;
-  cli_nom: string | null;
-  cli_prenom: string | null;
-  cli_email: string | null;
-  cli_adresse: string | null;
-  cli_npa: number;
-  cli_ville: string;
-}
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
@@ -34,19 +23,7 @@ export default function ClientsPage() {
           return;
         }
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-        const response = await fetch(`${API_URL}/clients`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json',
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Erreur lors du chargement des clients');
-        }
-
-        const data = await response.json();
+        const data = await clientService.getClients();
         setClients(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Une erreur est survenue');
@@ -60,7 +37,7 @@ export default function ClientsPage() {
   }, []);
 
   // Helper function to display value or dash
-  const displayValue = (value: string | null) => value || '-';
+  const displayValue = (value: string | null | undefined) => value || '-';
 
   // Helper function to format client type for display
   const formatClientType = (type: string) => {
@@ -103,23 +80,28 @@ export default function ClientsPage() {
                   <div className="col-span-2">{displayValue(client.cli_nom)}</div>
                   <div className="col-span-2">{displayValue(client.cli_prenom)}</div>
                   <div className="col-span-3 flex justify-center items-center space-x-2">
-                    <a
-                      href={`/clients/${client.cli_id}`}
-                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm"
+                    <Link
+                      href={client.cli_id ? `/clients/${client.cli_id}` : '#'}
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm text-center min-w-[80px]"
                     >
                       Voir
-                    </a>
-                    <a
-                      href={`/clients/edit/${client.cli_id}`}
-                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                    </Link>
+                    <Link
+                      href={client.cli_id ? `/clients/edit/${client.cli_id}` : '#'}
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm text-center min-w-[80px]"
                     >
                       Modifier
-                    </a>
+                    </Link>
                     <button
                     onClick={async () => {
                       const clientName = [client.cli_nom, client.cli_prenom, client.cli_nom_entreprise]
                         .filter(Boolean)
                         .join(' ');
+
+                      if (!client.cli_id) {
+                        setError("Impossible de supprimer ce client (ID manquant)");
+                        return;
+                      }
 
                       if (confirm(`Êtes-vous sûr de vouloir supprimer ${clientName} ?`)) {
                         try {
@@ -137,7 +119,7 @@ export default function ClientsPage() {
                       }
                     }}
                     type="button"
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm text-center min-w-[80px]">
                       Supprimer
                     </button>
                   </div>
@@ -151,11 +133,11 @@ export default function ClientsPage() {
 
             {/* Add New Client Button */}
             <div className="p-4 flex justify-center">
-              <a
+              <Link
               href="/clients/new"
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center">
+              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center w-[264px]">
                 Créer un nouveau client
-              </a>
+              </Link>
             </div>
           </div>
         )}
