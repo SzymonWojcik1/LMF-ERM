@@ -1,5 +1,7 @@
 'use client';
 
+import Navbar from '@/components/Navbar';
+
 export default function TestQRPage() {
   const handleGeneratePDF = async () => {
     try {
@@ -33,14 +35,17 @@ export default function TestQRPage() {
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Test QR Bill Generator</h1>
-      <button
-        onClick={handleGeneratePDF}
-        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-      >
-        Generate QR Bill PDF
-      </button>
+    <div>
+      <Navbar />
+      <div className="p-8">
+        <h1 className="text-2xl font-bold mb-4">Test QR Bill Generator</h1>
+        <button
+          onClick={handleGeneratePDF}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Generate QR Bill PDF
+        </button>
+      </div>
     </div>
   );
 }
