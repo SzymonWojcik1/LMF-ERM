@@ -8,24 +8,24 @@ import fs from 'fs';
 export async function POST(request: NextRequest) {
   try {
     const data = {
-      amount: 2606.35,
+      amount: 756.70,
       creditor: {
         account: "CH44 3199 9123 0008 8901 2",
-        address: "Rue de l'Exemple",
-        buildingNumber: 7,
-        city: "Ville-Exemple",
+        address: "Rue de la Servette",
+        buildingNumber: 45,
+        city: "Genève",
         country: "CH",
-        name: "SwissQRBill",
-        zip: 1234
+        name: "LMF Services Sàrl",
+        zip: 1202
       },
       currency: "CHF" as const,
       debtor: {
-        address: "Rue de l'Exemple",
-        buildingNumber: 1,
-        city: "Ville-Exemple",
+        address: "Avenue du Mont-Blanc",
+        buildingNumber: 12,
+        city: "Genève",
         country: "CH",
-        name: "Pierre Martin",
-        zip: 1234
+        name: "Hôtel Le Grand Lac SA",
+        zip: 1201
       },
       reference: "21 00000 00003 13947 14300 09017"
     };
@@ -58,12 +58,11 @@ export async function POST(request: NextRequest) {
       { align: "left", height: mm2pt(50), width: mm2pt(70) }
     );
 
-    pdf.fontSize(14).text("Facture N° 1071672", mm2pt(20), mm2pt(100), {
+    pdf.fontSize(14).text("Facture N.010111", mm2pt(20), mm2pt(100), {
       align: "left", width: mm2pt(170)
     });
 
-    const date = new Date();
-    pdf.fontSize(11).text(`Ville-Exemple le ${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`, {
+    pdf.fontSize(11).text(`Genève le, 08 Juillet 2025`, {
       align: "right", width: mm2pt(170)
     });
 
@@ -73,18 +72,19 @@ export async function POST(request: NextRequest) {
           backgroundColor: "#4A4D51",
           columns: [
             { text: "Position", width: mm2pt(20) },
-            { text: "Quantité", width: mm2pt(20) },
+            { text: "Heures", width: mm2pt(20) },
             { text: "Désignation" },
-            { text: "Total", width: mm2pt(30) }
+            { text: "Prix/h", width: mm2pt(25) },
+            { text: "Total", width: mm2pt(25) }
           ],
           height: 20, padding: 5, textColor: "#fff", verticalAlign: "center"
         },
-        { columns: [{ text: "1", width: mm2pt(20) }, { text: "14 h.", width: mm2pt(20) }, { text: "Programmation SwissQRBill" }, { text: "CHF 1'540.00", width: mm2pt(30) }], padding: 5 },
-        { columns: [{ text: "2", width: mm2pt(20) }, { text: "8 h.", width: mm2pt(20) }, { text: "Documentation" }, { text: "CHF 880.00", width: mm2pt(30) }], padding: 5 },
-        { columns: [{ text: "", width: mm2pt(20) }, { text: "", width: mm2pt(20) }, { text: "Sous-total" }, { text: "CHF 2'420.00", width: mm2pt(30) }], height: 40, padding: 5 },
-        { columns: [{ text: "", width: mm2pt(20) }, { text: "", width: mm2pt(20) }, { text: "TVA" }, { text: "7.7%", width: mm2pt(30) }], padding: 5 },
-        { columns: [{ text: "", width: mm2pt(20) }, { text: "", width: mm2pt(20) }, { text: "Montant TVA" }, { text: "CHF 186.35", width: mm2pt(30) }], padding: 5 },
-        { columns: [{ text: "", width: mm2pt(20) }, { text: "", width: mm2pt(20) }, { text: "Total facture" }, { text: "CHF 2'606.35", width: mm2pt(30) }], height: 40, padding: 5 }
+        { columns: [{ text: "•", width: mm2pt(20) }, { text: "8 h.", width: mm2pt(20) }, { text: "Montage et démontage de meubles" }, { text: "CHF 35.00", width: mm2pt(25) }, { text: "CHF 280.00", width: mm2pt(25) }], padding: 5 },
+        { columns: [{ text: "•", width: mm2pt(20) }, { text: "6 h.", width: mm2pt(20) }, { text: "Protection et mise à la cave" }, { text: "CHF 35.00", width: mm2pt(25) }, { text: "CHF 210.00", width: mm2pt(25) }], padding: 5 },
+        { columns: [{ text: "•", width: mm2pt(20) }, { text: "6 h.", width: mm2pt(20) }, { text: "Frais de transport et mains d'œuvres" }, { text: "CHF 35.00", width: mm2pt(25) }, { text: "CHF 210.00", width: mm2pt(25) }], padding: 5 },
+        { columns: [{ text: "", width: mm2pt(20) }, { text: "", width: mm2pt(20) }, { text: "", width: mm2pt(25) }, { text: "Montant total HT :", width: mm2pt(25) }, { text: "CHF 700.00", width: mm2pt(25) }], height: 40, padding: 5 },
+        { columns: [{ text: "", width: mm2pt(20) }, { text: "", width: mm2pt(20) }, { text: "", width: mm2pt(25) }, { text: "TVA 8.1%", width: mm2pt(25) }, { text: "CHF 56.70", width: mm2pt(25) }], padding: 5 },
+        { columns: [{ text: "", width: mm2pt(20) }, { text: "", width: mm2pt(20) }, { text: "", width: mm2pt(25) }, { text: "Pour un montant total TTC :", width: mm2pt(25) }, { text: "CHF 756.70 TTC", width: mm2pt(25) }], height: 40, padding: 5 }
       ],
       width: mm2pt(170)
     });
