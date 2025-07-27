@@ -98,12 +98,6 @@ export default function LoginPage() {
               {isLoading ? 'Connexion en cours...' : 'Se connecter'}
             </button>
           </div>
-
-          <div className="text-center">
-            <Link href="/forgot-password" className="text-sm text-blue-500 hover:text-blue-700">
-              Mot de passe oublié ?
-            </Link>
-          </div>
         </form>
       </div>
     </div>

@@ -40,6 +40,13 @@ export default function Home() {
 
         <div className="bg-gray-100 rounded-lg p-8 shadow-sm w-full max-w-md">
           <div className="space-y-4">
+            {/* Create quote button */}
+            <a href="/devis/creer" className="flex items-center bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-md w-full transition-colors duration-200">
+              <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <span>Créer un devis</span>
+            </a>
             {/* Create invoice button */}
             <a href="/factures/creer" className="flex items-center bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-md w-full transition-colors duration-200">
               <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
