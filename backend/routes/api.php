@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\CompteBancaireController;
 
 // API route test
 Route::get('/', function () {
@@ -23,6 +24,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     // Routes for the management of clients (protected by authentication)
     Route::apiResource('clients', ClientController::class);
+
+    // Route to get the bank accounts
+    Route::apiResource('comptes_bancaires', CompteBancaireController::class);
+
 
     // Routes for the management of sites
     Route::apiResource('sites', SiteController::class);
