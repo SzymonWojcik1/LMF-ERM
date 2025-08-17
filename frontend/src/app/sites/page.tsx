@@ -88,7 +88,14 @@ export default function SitesPage() {
     <>
       <Navbar />
       <div className="flex flex-col items-center justify-center py-12 px-4">
-        <h1 className="text-3xl font-bold mb-8">Sites</h1>
+        <div className="flex justify-between items-center w-full max-w-6xl mb-8">
+          <h1 className="text-3xl font-bold">Sites</h1>
+          <Link
+            href="/sites/new"
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md whitespace-nowrap">
+            + Nouveau site
+          </Link>
+        </div>
 
         {isLoading ? (
           <div className="flex justify-center mt-8">
@@ -174,16 +181,6 @@ export default function SitesPage() {
                 Aucun site trouvé
               </div>
             )}
-
-            {/* Add New Site Button */}
-            <div className="flex justify-center p-4">
-              <Link
-                href="/sites/new"
-                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center w-[264px]"
-              >
-                Créer un nouveau site
-              </Link>
-            </div>
           </div>
         )}
       </div>

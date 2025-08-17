@@ -50,7 +50,14 @@ export default function ClientsPage() {
     <>
       <Navbar />
       <div className="flex flex-col items-center justify-center py-12 px-4">
-        <h1 className="text-3xl font-bold mb-8">Clients</h1>
+        <div className="flex justify-between items-center w-full max-w-4xl mb-8">
+          <h1 className="text-3xl font-bold">Clients</h1>
+          <Link
+            href="/clients/new"
+            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md whitespace-nowrap">
+            + Nouveau client
+          </Link>
+        </div>
 
         {isLoading ? (
           <div className="flex justify-center mt-8">
@@ -130,15 +137,6 @@ export default function ClientsPage() {
                 Aucun client trouvé
               </div>
             )}
-
-            {/* Add New Client Button */}
-            <div className="p-4 flex justify-center">
-              <Link
-              href="/clients/new"
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md text-center w-[264px]">
-                Créer un nouveau client
-              </Link>
-            </div>
           </div>
         )}
       </div>

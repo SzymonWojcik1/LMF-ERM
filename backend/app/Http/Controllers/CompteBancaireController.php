@@ -11,7 +11,7 @@ class CompteBancaireController extends Controller
 {
     public function index(): JsonResponse
     {
-        $comptes = CompteBancaire::orderBy('ban_nom_affichage')->get();
+        $comptes = CompteBancaire::orderBy('ban_id')->get();
         return response()->json($comptes);
     }
 
@@ -35,13 +35,16 @@ class CompteBancaireController extends Controller
         return response()->json($compte, 201);
     }
 
-    public function show(CompteBancaire $compteBancaire): JsonResponse
+    public function show($id): JsonResponse
     {
+        $compteBancaire = CompteBancaire::findOrFail($id);
         return response()->json($compteBancaire);
     }
 
-    public function update(Request $request, CompteBancaire $compteBancaire): JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
+        $compteBancaire = CompteBancaire::findOrFail($id);
+
         $request->validate([
             'ban_nom_affichage' => 'required|string|max:255',
             'ban_banque' => 'required|string|max:255',
@@ -60,8 +63,9 @@ class CompteBancaireController extends Controller
         return response()->json($compteBancaire);
     }
 
-    public function destroy(CompteBancaire $compteBancaire): JsonResponse
+    public function destroy($id): JsonResponse
     {
+        $compteBancaire = CompteBancaire::findOrFail($id);
         $compteBancaire->delete();
         return response()->json(['message' => 'Compte bancaire supprimé avec succès']);
     }

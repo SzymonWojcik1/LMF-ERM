@@ -89,3 +89,21 @@ export interface Site {
     [key: string]: string | number | undefined;
   };
 }
+
+// Bank Account model for API responses
+export interface CompteBancaire {
+  ban_id?: number;
+  ban_nom_affichage: string;
+  ban_banque: string;
+  ban_devise: string;
+  ban_iban: string;
+  ban_adresse: string;
+  ban_numero_batiment: number;
+  ban_ville: string;
+  ban_pays: string;
+  ban_nom_entreprise: string;
+  ban_npa: number;
+  ban_actif: boolean;
+  ban_created_at?: string;
+  ban_updated_at?: string;
+}
