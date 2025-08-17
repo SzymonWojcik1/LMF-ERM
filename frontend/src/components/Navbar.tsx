@@ -8,9 +8,13 @@ export default function Navbar() {
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false);
   const [sitesDropdownOpen, setSitesDropdownOpen] = useState(false);
   const [clientsDropdownOpen, setClientsDropdownOpen] = useState(false);
+  const [bankAccountsDropdownOpen, setBankAccountsDropdownOpen] = useState(false);
+  const [facturesDropdownOpen, setFacturesDropdownOpen] = useState(false);
   const accountDropdownRef = useRef<HTMLDivElement>(null);
   const sitesDropdownRef = useRef<HTMLDivElement>(null);
   const clientsDropdownRef = useRef<HTMLDivElement>(null);
+  const bankAccountsDropdownRef = useRef<HTMLDivElement>(null);
+  const facturesDropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
   // Close dropdowns when clicking outside
@@ -24,6 +28,12 @@ export default function Navbar() {
       }
       if (clientsDropdownRef.current && !clientsDropdownRef.current.contains(event.target as Node)) {
         setClientsDropdownOpen(false);
+      }
+      if (bankAccountsDropdownRef.current && !bankAccountsDropdownRef.current.contains(event.target as Node)) {
+        setBankAccountsDropdownOpen(false);
+      }
+      if (facturesDropdownRef.current && !facturesDropdownRef.current.contains(event.target as Node)) {
+        setFacturesDropdownOpen(false);
       }
     }
 
@@ -87,17 +97,17 @@ export default function Navbar() {
 
               {/* Sites dropdown */}
               <div className="relative" ref={sitesDropdownRef}>
-                <button
+                <Link
+                  href="/sites"
                   className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full ${
                     pathname.startsWith('/sites') || sitesDropdownOpen
                       ? 'border-blue-500 text-gray-900'
                       : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                   }`}
-                  onClick={() => setSitesDropdownOpen(!sitesDropdownOpen)}
                   onMouseEnter={() => setSitesDropdownOpen(true)}
                 >
                   Sites <span className="ml-1">▾</span>
-                </button>
+                </Link>
 
                 {/* Sites dropdown panel */}
                 {sitesDropdownOpen && (
@@ -122,30 +132,56 @@ export default function Navbar() {
                 )}
               </div>
 
-              <Link
-                href="/factures"
-                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full ${
-                  pathname.startsWith('/factures')
-                    ? 'border-blue-500 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                }`}
-              >
-                Factures
-              </Link>
+              {/* Factures dropdown */}
+              <div className="relative" ref={facturesDropdownRef}>
+                <Link
+                  href="/factures"
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full ${
+                    pathname.startsWith('/factures') || facturesDropdownOpen
+                      ? 'border-blue-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  }`}
+                  onMouseEnter={() => setFacturesDropdownOpen(true)}
+                >
+                  Factures <span className="ml-1">▾</span>
+                </Link>
+
+                {/* Factures dropdown panel */}
+                {facturesDropdownOpen && (
+                  <div
+                    className="absolute left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-10"
+                    onMouseLeave={() => setFacturesDropdownOpen(false)}
+                  >
+                    <Link
+                      href="/factures"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Liste
+                    </Link>
+
+                    <Link
+                      href="/factures/creer"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Créer
+                    </Link>
+                  </div>
+                )}
+              </div>
 
               {/* Clients dropdown */}
               <div className="relative" ref={clientsDropdownRef}>
-                <button
+                <Link
+                  href="/clients"
                   className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full ${
                     pathname.startsWith('/clients') || clientsDropdownOpen
                       ? 'border-blue-500 text-gray-900'
                       : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                   }`}
-                  onClick={() => setClientsDropdownOpen(!clientsDropdownOpen)}
                   onMouseEnter={() => setClientsDropdownOpen(true)}
                 >
                   Clients <span className="ml-1">▾</span>
-                </button>
+                </Link>
 
                 {/* Clients dropdown panel */}
                 {clientsDropdownOpen && (
@@ -170,7 +206,44 @@ export default function Navbar() {
                 )}
               </div>
 
-              {/* Account dropdown */}
+              {/* Bank Accounts dropdown */}
+              <div className="relative" ref={bankAccountsDropdownRef}>
+                <Link
+                  href="/comptes_bancaires"
+                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full ${
+                    pathname.startsWith('/comptes_bancaires') || bankAccountsDropdownOpen
+                      ? 'border-blue-500 text-gray-900'
+                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                  }`}
+                  onMouseEnter={() => setBankAccountsDropdownOpen(true)}
+                >
+                  Comptes Bancaires <span className="ml-1">▾</span>
+                </Link>
+
+                {/* Bank Accounts dropdown panel */}
+                {bankAccountsDropdownOpen && (
+                  <div
+                    className="absolute left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-10"
+                    onMouseLeave={() => setBankAccountsDropdownOpen(false)}
+                  >
+                    <Link
+                      href="/comptes_bancaires"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Liste
+                    </Link>
+
+                    <Link
+                      href="/comptes_bancaires/new"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      Créer
+                    </Link>
+                  </div>
+                )}
+              </div>
+
+              {/* User Accounts dropdown */}
               <div className="relative" ref={accountDropdownRef}>
                 <button
                   className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium h-full ${
@@ -181,7 +254,7 @@ export default function Navbar() {
                   onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
                   onMouseEnter={() => setAccountDropdownOpen(true)}
                 >
-                  Compte <span className="ml-1">▾</span>
+                  Comptes Utilisateur <span className="ml-1">▾</span>
                 </button>
 
                 {/* Account dropdown panel */}
