@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import FactureForm from '@/components/factures/FactureForm';
 import Navbar from '@/components/Navbar';
+import { siteService } from '@/services/siteService';
+import { Site } from '@/types/models';
 
 interface FactureItem {
   id: string;
@@ -52,8 +54,33 @@ interface FactureData {
 
 export default function NewFacturePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const siteId = searchParams.get('siteId');
+
   const [error, setError] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isLoadingSite, setIsLoadingSite] = useState(false);
+  const [prefilledSite, setPrefilledSite] = useState<Site | null>(null);
+
+  // Load site data if siteId is provided
+  useEffect(() => {
+    const loadSite = async () => {
+      if (siteId) {
+        setIsLoadingSite(true);
+        try {
+          const site = await siteService.getSite(parseInt(siteId));
+          setPrefilledSite(site);
+        } catch (err) {
+          console.error('Failed to load site:', err);
+          setError('Impossible de charger les informations du site');
+        } finally {
+          setIsLoadingSite(false);
+        }
+      }
+    };
+
+    loadSite();
+  }, [siteId]);
 
   const handleSubmit = async (factureData: FactureData) => {
     try {
@@ -146,6 +173,17 @@ export default function NewFacturePage() {
     <>
       <Navbar />
       <div className="flex flex-col items-center justify-center py-12 px-4">
+        <div className="w-full max-w-6xl mb-6">
+          <h1 className="text-3xl font-bold">
+            {prefilledSite ? `Nouvelle Facture - ${prefilledSite.sit_nom}` : 'Nouvelle Facture'}
+          </h1>
+          {prefilledSite && (
+            <p className="text-gray-600 mt-2">
+              Les informations du site "{prefilledSite.sit_nom}" ont été pré-remplies automatiquement.
+            </p>
+          )}
+        </div>
+
         {error && (
           <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 w-full max-w-6xl">
             {error}
@@ -158,7 +196,17 @@ export default function NewFacturePage() {
           </div>
         )}
 
-        <FactureForm onSubmit={handleSubmit} onCancel={handleCancel} />
+        {isLoadingSite ? (
+          <div className="flex justify-center mt-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : (
+          <FactureForm
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+            prefilledSite={prefilledSite}
+          />
+        )}
       </div>
     </>
   );

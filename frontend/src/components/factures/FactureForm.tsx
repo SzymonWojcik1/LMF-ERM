@@ -56,6 +56,7 @@ interface FactureFormProps {
   isEditMode?: boolean;
   onSubmit: (facture: FactureData) => Promise<void>;
   onCancel: () => void;
+  prefilledSite?: Site | null;
 }
 
 const defaultFacture: FactureData = {
@@ -94,7 +95,8 @@ export default function FactureForm({
   facture = defaultFacture,
   isEditMode = false,
   onSubmit,
-  onCancel
+  onCancel,
+  prefilledSite
 }: FactureFormProps) {
   const [formData, setFormData] = useState<FactureData>(facture);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -155,7 +157,45 @@ export default function FactureForm({
     loadSites();
   }, []);
 
-  // Generate unique ID for new items
+  // Handle prefilled site when provided
+  useEffect(() => {
+    if (prefilledSite) {
+      console.log('Prefilling with site:', prefilledSite);
+
+      // Auto-select this site
+      setSelectedSiteId(prefilledSite.sit_id?.toString() || '');
+
+      // Pre-fill debtor information from site's client
+      const client = prefilledSite.client;
+      if (client) {
+        let debtorName = '';
+        if (client.cli_type === 'entreprise') {
+          debtorName = client.cli_nom_entreprise || '';
+        } else {
+          debtorName = `${client.cli_prenom || ''} ${client.cli_nom || ''}`.trim();
+        }
+
+        // Use client address for billing
+        setFormData(prev => ({
+          ...prev,
+          debtorName,
+          debtorAddress: client.cli_adresse || '',
+          debtorBuildingNumber: 0,
+          debtorCity: client.cli_ville || '',
+          debtorZip: client.cli_npa || 0,
+          debtorCountry: 'CH',
+        }));
+
+        console.log('Prefilled debtor info:', {
+          debtorName,
+          debtorAddress: client.cli_adresse,
+          debtorCity: client.cli_ville,
+          debtorZip: client.cli_npa
+        });
+      }
+    }
+  }, [prefilledSite]);
+
   const generateItemId = () => `item_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
   // Handle bank account selection
@@ -186,10 +226,10 @@ export default function FactureForm({
     if (siteId) {
       const selectedSite = sites.find(site => site.sit_id?.toString() === siteId);
       if (selectedSite) {
-        // Get client information from the site's client relationship
+        // Get client information
         const client = selectedSite.client;
 
-        // Determine the debtor name based on client type
+        // Determine the debtor name
         let debtorName = '';
         if (client) {
           if (client.cli_type === 'entreprise') {
@@ -202,11 +242,11 @@ export default function FactureForm({
         setFormData(prev => ({
           ...prev,
           debtorName: debtorName,
-          debtorAddress: selectedSite.sit_adresse,
-          debtorBuildingNumber: 0, // Sites don't have building numbers typically
-          debtorCity: selectedSite.sit_ville || '',
-          debtorZip: selectedSite.sit_npa || 0,
-          debtorCountry: 'CH', // Default to Switzerland
+          debtorAddress: client?.cli_adresse || '', // Use client address for billing
+          debtorBuildingNumber: 0,
+          debtorCity: client?.cli_ville || '',
+          debtorZip: client?.cli_npa || 0,
+          debtorCountry: 'CH',
         }));
       }
     }
@@ -288,12 +328,12 @@ export default function FactureForm({
     setFormData(prev => {
       let montantHT = prev.items.reduce((sum, item) => sum + item.total, 0);
 
-      // Apply pro rata discount if specified (subtract percentage)
+      // Apply pro rata if specified
       if (prev.proRata > 0) {
         montantHT = montantHT - (montantHT * (prev.proRata / 100));
       }
 
-      // Apply rabais (discount) if specified (subtract percentage)
+      // Apply rabais if specified
       if (prev.rabais > 0) {
         montantHT = montantHT - (montantHT * (prev.rabais / 100));
       }

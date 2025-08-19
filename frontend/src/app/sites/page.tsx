@@ -152,6 +152,12 @@ export default function SitesPage() {
                     >
                       Modifier
                     </a>
+                    <a
+                      href={`/factures/new?siteId=${site.sit_id}`}
+                      className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded text-sm min-w-[80px] text-center"
+                    >
+                      Créer une facture
+                    </a>
                     <button
                       onClick={async () => {
                         if (confirm(`Êtes-vous sûr de vouloir supprimer le site "${site.sit_nom}" ?`)) {

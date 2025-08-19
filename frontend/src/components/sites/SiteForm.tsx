@@ -9,6 +9,7 @@ interface SiteFormProps {
   isEditMode?: boolean;
   onSubmit: (site: Site) => Promise<void>;
   onCancel: () => void;
+  prefilledClient?: Client | null;
 }
 
 const defaultSite: Partial<Site> = {
@@ -21,7 +22,7 @@ const defaultSite: Partial<Site> = {
   sit_ville: '',
 };
 
-export default function SiteForm({ site = defaultSite, isEditMode = false, onSubmit, onCancel }: SiteFormProps) {
+export default function SiteForm({ site = defaultSite, isEditMode = false, onSubmit, onCancel, prefilledClient }: SiteFormProps) {
   const [formData, setFormData] = useState<Partial<Site>>(site);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,6 +56,18 @@ export default function SiteForm({ site = defaultSite, isEditMode = false, onSub
   useEffect(() => {
     setFormData(site);
   }, [site]);
+
+  // Handle prefilled client when provided
+  useEffect(() => {
+    if (prefilledClient) {
+      console.log('Prefilling with client:', prefilledClient);
+      setSelectedClient(prefilledClient);
+      setFormData(prev => ({
+        ...prev,
+        sit_client_id: prefilledClient.cli_id
+      }));
+    }
+  }, [prefilledClient]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -139,9 +152,6 @@ export default function SiteForm({ site = defaultSite, isEditMode = false, onSub
         try {
           const user = JSON.parse(userJson);
           console.log('User object from localStorage:', user);
-
-          // The backend expects id but the user object might have a different field name
-          // Try different possible field names
           userId = user.id || user.usr_id || user.user_id || 1;
           console.log('Using user ID:', userId);
         } catch (e) {
@@ -156,7 +166,6 @@ export default function SiteForm({ site = defaultSite, isEditMode = false, onSub
         return;
       }
 
-      // Ensure we're using numeric IDs, not string IDs
       const completeFormData = {
         ...formData,
         sit_client_id: Number(formData.sit_client_id),
@@ -167,7 +176,6 @@ export default function SiteForm({ site = defaultSite, isEditMode = false, onSub
       console.log('Sending form data to backend:', completeFormData);
 
       try {
-        // Submit the form with the complete data
         await onSubmit(completeFormData as Site);
       } catch (submitError) {
         throw submitError;
@@ -232,7 +240,7 @@ export default function SiteForm({ site = defaultSite, isEditMode = false, onSub
           {errors.sit_client_id && <p className="mt-2 text-sm text-red-600">{errors.sit_client_id}</p>}
         </div>
 
-        {/* Client Details (if a client is selected) */}
+        {/* Client Details*/}
         {selectedClient && (
           <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4">
             <h3 className="text-md font-medium text-gray-700 mb-2">Détails du client</h3>
@@ -375,7 +383,7 @@ export default function SiteForm({ site = defaultSite, isEditMode = false, onSub
           {errors.sit_adresse && <p className="mt-2 text-sm text-red-600">{errors.sit_adresse}</p>}
         </div>
 
-        {/* NPA (Postal Code) */}
+        {/* NPA */}
         <div>
           <label htmlFor="sit_npa" className="block text-sm font-medium text-gray-700">
             NPA *

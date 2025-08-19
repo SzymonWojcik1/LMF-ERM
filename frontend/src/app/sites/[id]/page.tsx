@@ -208,6 +208,12 @@ export default function SiteDetailPage({ params }: { params: { id: string } }) {
               >
                 Supprimer le site
               </button>
+              <button
+                onClick={() => router.push(`/factures/new?siteId=${params.id}`)}
+                className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+              >
+                Créer une facture
+              </button>
             </div>
 
             <button

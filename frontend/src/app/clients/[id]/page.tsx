@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { clientService, Client } from '@/services/clientService';
+import { clientService } from '@/services/clientService';
+import { Client } from '@/types/models';
 import Navbar from '@/components/Navbar';
 
 
@@ -132,6 +133,12 @@ export default function ClientDetailPage({ params }: { params: { id: string } })
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
               >
                 Supprimer le client
+              </button>
+              <button
+                onClick={() => router.push(`/sites/new?clientId=${params.id}`)}
+                className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition-colors"
+              >
+                Créer un site
               </button>
             </div>
 
